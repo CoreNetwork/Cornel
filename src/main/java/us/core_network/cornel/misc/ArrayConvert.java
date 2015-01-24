@@ -1,4 +1,4 @@
-package us.corenetwork.cornel.misc;
+package us.core_network.cornel.misc;
 
 /**
  * Class to convert between primitive and wrapper number arrays.

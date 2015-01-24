@@ -1,4 +1,4 @@
-package us.corenetwork.cornel.items;
+package us.core_network.cornel.items;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -25,8 +25,8 @@ import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.InvalidConfigurationException;
 import org.bukkit.configuration.MemorySection;
 import org.bukkit.configuration.file.YamlConfiguration;
-import us.corenetwork.cornel.misc.ArrayConvert;
-import us.corenetwork.cornel.player.Messages;
+import us.core_network.cornel.misc.ArrayConvert;
+import us.core_network.cornel.player.Messages;
 
 public class YamlTags
 {
@@ -37,7 +37,7 @@ public class YamlTags
 
     /**
      * Loads NBTTagCompound from YAML file.
-     * @param name Name of the YAML file without .yml extension. File must be in {@link us.corenetwork.cornel.items.YamlTags#YAML_FOLDER}.
+     * @param name Name of the YAML file without .yml extension. File must be in {@link YamlTags#YAML_FOLDER}.
      * @return Tag read from the file.
      * @throws FileNotFoundException Thrown if YAML does not exist.
      * @throws IOException Thrown if YAML file could not be loaded.
@@ -190,7 +190,7 @@ public class YamlTags
 
     /**
      * Saves NBTTagCompound into YAML file.
-     * @param name Name of the YAML file without .yml extension. File must be in {@link us.corenetwork.cornel.items.YamlTags#YAML_FOLDER}.
+     * @param name Name of the YAML file without .yml extension. File must be in {@link YamlTags#YAML_FOLDER}.
      * @param tag tag to save.
      * @throws IOException Thrown if YAML file could not be saved.
      * @throws ReflectiveOperationException Thrown when something went wrong while accessing reflection classes in Minecraft code (usually when class was not properly updated to new Minecraft version).

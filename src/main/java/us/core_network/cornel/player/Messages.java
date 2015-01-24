@@ -1,4 +1,4 @@
-package us.corenetwork.cornel.player;
+package us.core_network.cornel.player;
 
 import org.bukkit.ChatColor;
 
