@@ -37,20 +37,20 @@ public class NbtYaml
 
     /**
      * Loads NBTTagCompound from YAML file.
-     * @param name Name of the YAML file without .yml extension. File must be in {@link NbtYaml#YAML_FOLDER}.
+     * @param fileName Name of the YAML file without .yml extension. File must be in {@link NbtYaml#YAML_FOLDER}.
      * @return Tag read from the file.
      * @throws FileNotFoundException Thrown if YAML does not exist.
      * @throws IOException Thrown if YAML file could not be loaded.
      * @throws InvalidConfigurationException Thrown if provided file is not valid YAML file.
      */
-    public static NBTTagCompound load(String name) throws FileNotFoundException, IOException, InvalidConfigurationException
+    public static NBTTagCompound loadFromFile(String fileName) throws FileNotFoundException, IOException, InvalidConfigurationException
     {
         YamlConfiguration yaml = new YamlConfiguration();
 
-        File file = new File(YAML_FOLDER, name + ".yml");
+        File file = new File(YAML_FOLDER, fileName + ".yml");
         yaml.load(file);
 
-        return load(yaml.getValues(false));
+        return loadFromNodes(yaml.getValues(false));
     }
 
     /**
@@ -58,7 +58,7 @@ public class NbtYaml
      * @param section YAML node map.
      * @return Tag read from specified node map.
      */
-    public static NBTTagCompound load(Map<?,?> section)
+    public static NBTTagCompound loadFromNodes(Map<?, ?> section)
     {
         NBTTagCompound newTag = new NBTTagCompound();
 
@@ -190,13 +190,13 @@ public class NbtYaml
 
     /**
      * Saves NBTTagCompound into YAML file.
-     * @param name Name of the YAML file without .yml extension. File must be in {@link NbtYaml#YAML_FOLDER}.
+     * @param fileName Name of the YAML file without .yml extension. File must be in {@link NbtYaml#YAML_FOLDER}.
      * @param tag tag to save.
      * @throws IOException Thrown if YAML file could not be saved.
      * @throws ReflectiveOperationException Thrown when something went wrong while accessing reflection classes in Minecraft code (usually when class was not properly updated to new Minecraft version).
      */
 
-    public static void saveTag(String name, NBTTagCompound tag) throws IOException, ReflectiveOperationException
+    public static void saveToFile(String fileName, NBTTagCompound tag) throws IOException, ReflectiveOperationException
     {
         YamlConfiguration yaml = new YamlConfiguration();
 
@@ -205,7 +205,7 @@ public class NbtYaml
             addTag(yaml, key, tag.get(key));
         }
 
-        yaml.save(new File(YAML_FOLDER, name + ".yml"));
+        yaml.save(new File(YAML_FOLDER, fileName + ".yml"));
     }
 
     /**
