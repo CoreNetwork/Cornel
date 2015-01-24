@@ -91,7 +91,7 @@ public class YamlTags
     {
         if (tag instanceof String)
         {
-            return new NBTTagString(Messages.applyColors((String) tag));
+            return new NBTTagString(Messages.applyFormattingCodes((String) tag));
         }
         else if (tag instanceof ArrayList)
         {
