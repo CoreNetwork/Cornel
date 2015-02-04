@@ -98,4 +98,25 @@ public class ItemStackUtils
         item.setItemMeta(meta);
         return item;
     }
+
+    /**
+     * Checks if given ItemStacks contain exact same item type. Includes check for durability and NBT tags.
+     * @param a First ItemStack.
+     * @param b Second ItemStack
+     * @return <code>true</code> if ItemStacks contains same item.
+     */
+    public static boolean areItemsEqual(net.minecraft.server.v1_8_R1.ItemStack a, net.minecraft.server.v1_8_R1.ItemStack b)
+    {
+        if (a.getItem() != b.getItem())
+            return false;
+
+        // Item.k() returns true if durability of the item matters.
+        if (a.getData() != Short.MAX_VALUE && b.getData() != Short.MAX_VALUE && a.getItem().k() && a.getData() != b.getData())
+            return false;
+
+        if (a.hasTag() != b.hasTag())
+            return false;
+
+        return !a.hasTag() || a.getTag().equals(b.getTag());
+    }
 }
