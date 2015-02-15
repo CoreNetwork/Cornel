@@ -11,7 +11,6 @@ public class ReflectionUtils {
     {
         try {
             Class cls = obj.getClass();
-
             Field fieldObj = cls.getDeclaredField(field);
             fieldObj.setAccessible(true);
             return fieldObj.get(obj);
@@ -51,10 +50,9 @@ public class ReflectionUtils {
         }
     }
 
-    public static void set(Object obj, String field, Object value)
+    public static void set(Class cls, Object obj, String field, Object value)
     {
         try {
-            Class cls = obj.getClass();
             Field fieldObj = cls.getDeclaredField(field);
             fieldObj.setAccessible(true);
             fieldObj.set(obj, value);
@@ -63,6 +61,11 @@ public class ReflectionUtils {
         {
             e.printStackTrace();
         }
+    }
+
+    public static void set(Object obj, String field, Object value)
+    {
+        set(obj.getClass(), obj, field, value);
     }
 
     public static Method getMethod(Class cls, String methodName, Class... argumentTypes)
@@ -76,7 +79,6 @@ public class ReflectionUtils {
         {
             e.printStackTrace();
         }
-
         return null;
     }
 
@@ -89,7 +91,6 @@ public class ReflectionUtils {
         {
             e.printStackTrace();
         }
-
         return null;
     }
 }
