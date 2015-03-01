@@ -7,24 +7,37 @@ import us.core_network.cornel.custom.inventorygui.InventoryGUI;
 
 /**
  * This class is useful when you have one thing that can be controlled using multiple players (for example one block that multiple players can right click).
+ * Unlike {@link us.core_network.cornel.custom.inventorygui.SharedInventoryGUI}, this class assigns every player its own instance of the GUI,
+ * allowing you to display different GUI for every player while keeping track of all those GUIs, allowing you to control all of them independently.
+ * (For example close all windows when block is broken).
+ *
  * It allows synchronizing between multiple open inventory GUIs and ensuring action one player performs is reflected on others.
  *
  * <p>All your GUIs must extend {@link us.core_network.cornel.custom.inventorygui.InventoryGUIGroup.InventoryGUIGroupWindow}.</p>
- *
- * <p>Synchronization is achieved by registering all actions as methods of this class and then iterating through {@link us.core_network.cornel.custom.inventorygui.InventoryGUIGroup#openedWindows} for each action.</p>
- *
+ **
  * @see us.core_network.cornel.custom.inventorygui.InventoryGUIGroup.InventoryGUIGroupWindow
  * @see us.core_network.cornel.custom.inventorygui.InventoryGUI
  */
 public abstract class InventoryGUIGroup<T extends InventoryGUIGroup.InventoryGUIGroupWindow>
 {
-    protected List<T> openedWindows;
+    private List<T> openedWindows;
 
     public InventoryGUIGroup()
     {
         openedWindows = new ArrayList<T>();
     }
 
+    /**
+     * @return List of opened windows in this group.
+     */
+    public List<T> getOpenedWindows()
+    {
+        return openedWindows;
+    }
+
+    /**
+     * @return <code>true</code> if any window is opened in this group.
+     */
     public boolean isAnyWindowOpened()
     {
         return !openedWindows.isEmpty();
