@@ -5,6 +5,9 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 
+/**
+ * Class that is used to format relative amounts of time into strings (for example <code>190</code> can be turned into <code>3 minutes, 10 seconds</code>).
+ */
 public class TimeFormatter
 {
     public static final int UNIT_SECONDS = 0;
@@ -26,6 +29,10 @@ public class TimeFormatter
         this.properties = properties;
     }
 
+    /**
+     * @param seconds Relative time in seconds.
+     * @return Formatted time.
+     */
     public String format(int seconds)
     {
         StringBuilder finalStringBuilder = new StringBuilder();
