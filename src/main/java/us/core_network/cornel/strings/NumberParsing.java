@@ -1,7 +1,11 @@
-package us.core_network.cornel.java;
+package us.core_network.cornel.strings;
 
-public class NumberUtil
+public class NumberParsing
 {
+    /**
+     * @param text Text to test against.
+     * @return <code>true</code> if specified text can be parsed into {@link java.lang.Integer}.
+     */
     public static Boolean isInteger(String text)
     {
         try
@@ -14,6 +18,10 @@ public class NumberUtil
         }
     }
 
+    /**
+     * @param text Text to test against.
+     * @return <code>true</code> if specified text can be parsed into {@link java.lang.Double}.
+     */
     public static Boolean isDouble(String text)
     {
         try

@@ -2,26 +2,31 @@ package us.core_network.cornel.java;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
+import javax.annotation.Nullable;
 
 /**
  * Created by Matej on 23.2.2014.
  */
 public class ReflectionUtils {
+    /**
+     * Method that is used to retrieve value of a private variable in an object.
+     * This method can only be used if variable is declared in provided object, not in its subclass.
+     * @param obj Object that contains the variable.
+     * @param field Name of the field.
+     * @return Value of the field or <code>null if field does not exist.</code>
+     */
     public static Object get(Object obj, String field)
     {
-        try {
-            Class cls = obj.getClass();
-            Field fieldObj = cls.getDeclaredField(field);
-            fieldObj.setAccessible(true);
-            return fieldObj.get(obj);
-        }
-        catch (Exception e)
-        {
-            e.printStackTrace();
-            return null;
-        }
+        return get(obj.getClass(), obj, field);
     }
 
+    /**
+     * Method that is used to retrieve value of a private variable in an object.
+     * @param cls Class that contains definition ot this variable.
+     * @param obj Object that contains variable value.
+     * @param field Name of the field.
+     * @return Value of the field or <code>null</code> if field does not exist or something went wrong.
+     */
     public static Object get(Class cls, Object obj, String field)
     {
         try {
@@ -36,6 +41,12 @@ public class ReflectionUtils {
         }
     }
 
+    /**
+     * Method that is used to retrieve value of a private static variable of a class.
+     * @param cls Class that contains definition ot this variable.
+     * @param field Name of the field.
+     * @return Value of the field or <code>null</code> if field does not exist or something went wrong.
+     */
     public static Object getStatic(Class cls, String field)
     {
         try {
@@ -50,6 +61,25 @@ public class ReflectionUtils {
         }
     }
 
+    /**
+     * Method that is used to set value of a private variable in an object.
+     * This method can only be used if variable is declared in provided object, not in its subclass.
+     * @param obj Object that contains the variable.
+     * @param field Name of the field.
+     * @param value Value to set.
+     */
+    public static void set(Object obj, String field, Object value)
+    {
+        set(obj.getClass(), obj, field, value);
+    }
+
+    /**
+     * Method that is used to set value of a private variable in an object.
+     * @param cls Class that contains definition ot this variable.
+     * @param obj Object that contains the variable.
+     * @param field Name of the field.
+     * @param value Value to set.
+     */
     public static void set(Class cls, Object obj, String field, Object value)
     {
         try {
@@ -63,11 +93,12 @@ public class ReflectionUtils {
         }
     }
 
-    public static void set(Object obj, String field, Object value)
-    {
-        set(obj.getClass(), obj, field, value);
-    }
-
+    /**
+     * Method that is used to retrieve private method of the class that can be later executed using {@link us.core_network.cornel.java.ReflectionUtils#executeMethod(java.lang.reflect.Method, Object, Object...)}.
+     * @param cls Class that contains definition ot this variable.
+     * @param methodName Name of the field.
+     * @param argumentTypes Types of arguments of this method.
+     */
     public static Method getMethod(Class cls, String methodName, Class... argumentTypes)
     {
         try {
@@ -82,7 +113,14 @@ public class ReflectionUtils {
         return null;
     }
 
-    public static Object executeMethod(Method method, Object object, Object... arguments)
+    /**
+     * Execude {@link java.lang.reflect.Method}.
+     * @param method Method, retrieved using {@link us.core_network.cornel.java.ReflectionUtils#getMethod(Class, String, Class[])}.
+     * @param object Which object to execute method on. Use <code>null</code> for static methods.
+     * @param arguments Arguments to this method.
+     */
+
+    public static Object executeMethod(Method method, @Nullable Object object, Object... arguments)
     {
         try {
             return method.invoke(object, arguments);

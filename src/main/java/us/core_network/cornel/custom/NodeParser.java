@@ -10,7 +10,7 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-import us.core_network.cornel.java.NumberUtil;
+import us.core_network.cornel.strings.NumberParsing;
 
 /**
  * Class is used to parse long YAMl decision trees (for example what announcement message to send or what item to display in loot chest).
@@ -274,11 +274,11 @@ public abstract class NodeParser {
                 if (o instanceof String)
                 {
                     String textSplit[] = ((String) o).split(" ");
-                    if (textSplit.length > 1 && textSplit[0].equalsIgnoreCase("rolls") && NumberUtil.isInteger(textSplit[1]))
+                    if (textSplit.length > 1 && textSplit[0].equalsIgnoreCase("rolls") && NumberParsing.isInteger(textSplit[1]))
                     {
                         rolls = Integer.parseInt(textSplit[1]);
                     }
-                    else if (textSplit.length > 1 && textSplit[0].equalsIgnoreCase("chance") && NumberUtil.isDouble(textSplit[1]))
+                    else if (textSplit.length > 1 && textSplit[0].equalsIgnoreCase("chance") && NumberParsing.isDouble(textSplit[1]))
                     {
                         chance = Double.parseDouble(textSplit[1]);
                     }
