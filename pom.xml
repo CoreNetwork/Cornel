@@ -5,18 +5,15 @@
 	<groupId>us.core_network</groupId>
 	<artifactId>Cornel</artifactId>
 	<version>0.1</version>
-	<packaging>jar</packaging>
+    <modules>
+        <module>TestPlugin</module>
+        <module>Core</module>
+    </modules>
+    <packaging>pom</packaging>
 	<name>Cornel</name>
 	<url>https://github.com/CoreNetwork/Cornel</url>
 
 	<build>
-		<finalName>Cornel</finalName>
-		<resources>
-			<resource>
-				<directory>resources</directory>
-				<filtering>true</filtering>
-			</resource>
-		</resources>
 		<plugins>
 			<plugin>
 				<artifactId>maven-compiler-plugin</artifactId>
@@ -54,6 +51,7 @@
 			<groupId>org.spigot</groupId>
 			<artifactId>spigot</artifactId>
 			<version>1.8-SNAPSHOT-0.1</version>
+            <scope>provided</scope>
 		</dependency>
 
 

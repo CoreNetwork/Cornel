@@ -11,5 +11,7 @@
 
     <artifactId>CornelCore</artifactId>
 
-
+    <build>
+        <finalName>Cornel</finalName>
+    </build>
 </project>

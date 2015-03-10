@@ -1,7 +1,27 @@
 package us.core_network.corneltestplugin;
 
-/**
- * Created by tux on 09.03.15.
- */
-public class CoreModule {
+import org.bukkit.event.EventHandler;
+import org.bukkit.event.Listener;
+import org.bukkit.event.player.AsyncPlayerChatEvent;
+import org.bukkit.plugin.Plugin;
+import us.core_network.cornel.java.CLevel;
+import us.core_network.cornel.module.Module;
+
+public class CoreModule extends Module implements Listener {
+    protected CoreModule(Plugin plugin) {
+        super(plugin, "Root");
+    }
+
+    @Override
+    protected void onEnable() {
+        getBukkitManager().registerEvents(this);
+    }
+
+    @EventHandler
+    public void onPlayerChat(AsyncPlayerChatEvent event) {
+        getLogger().log(CLevel.POSITIVE, event.getMessage());
+        if (event.getMessage().equals("disable")) {
+            unloadInternally();
+        }
+    }
 }

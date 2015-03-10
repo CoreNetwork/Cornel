@@ -1,7 +1,17 @@
 package us.core_network.corneltestplugin;
 
-/**
- * Created by tux on 09.03.15.
- */
-public class CornelTestPlugin {
+import org.bukkit.plugin.java.JavaPlugin;
+
+public class CornelTestPlugin extends JavaPlugin {
+    private CoreModule root;
+    @Override
+    public void onEnable() {
+        root = new CoreModule(this);
+        root.loadInternally();
+    }
+
+    @Override
+    public void onDisable() {
+        root.unloadInternally();
+    }
 }

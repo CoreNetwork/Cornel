@@ -1,0 +1,5 @@
+name: CornelTestPlugin
+description: Test plugin to test Cornel
+authors: [Ginaw, matejdro, narrowtux]
+main: us.core_network.corneltestplugin.CornelTestPlugin
+version: ${version}
