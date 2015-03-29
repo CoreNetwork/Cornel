@@ -1,5 +1,10 @@
 package us.core_network.cornel.module;
 
+import com.flowpowered.cerealization.config.Configuration;
+import com.flowpowered.cerealization.config.ConfigurationException;
+import com.flowpowered.cerealization.config.annotated.AnnotatedObjectConfiguration;
+import com.flowpowered.cerealization.config.annotated.AnnotatedSubclassConfiguration;
+import com.flowpowered.cerealization.config.yaml.YamlConfiguration;
 import net.minecraft.server.v1_8_R1.PacketPlayOutCustomPayload;
 import org.bukkit.Bukkit;
 import org.bukkit.event.Event;
@@ -11,6 +16,7 @@ import org.bukkit.plugin.RegisteredListener;
 import us.core_network.cornel.event.module.ModuleStateChangedEvent;
 import us.core_network.cornel.module.dependency.Dependency;
 
+import java.io.File;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.lang.reflect.Parameter;
@@ -30,7 +36,33 @@ public abstract class Module {
     private State state = State.INVALID;
     private Logger logger;
     private String name;
+    /**
+     * Property that decides where the configuration of the module will be serialized to. <br/>
+     * <ul>
+     *     <li>
+     *         <h3>Store in parent module's file</h3>
+     *         <pre>parent</pre>
+     *         This will create a subpath with the module's name
+     *     </li>
+     *     <li>
+     *         <h3>Store in parent module's file with specific path</h3>
+     *         <pre>parent:path.to.config</pre>
+     *     </li>
+     *     <li>
+     *         <h3>Store in own file</h3>
+     *         <pre>modulename.yml</pre>
+     *         This will create a subpath names "root" in the given file. //TODO find out how to put this into the real root
+     *     </li>
+     *     <li>
+     *         <h3>Store in own file with specific path</h3>
+     *         <pre>config.yml:path.to.config</pre>
+     *     </li>
+     * </ul>
+     */
+    private String configPath;
+    private Class config;
     private ModuleBukkitManager bukkitManager = new ModuleBukkitManager(this);
+    private AnnotatedObjectConfiguration annotatedObjectConfiguration;
 
     private void setupLogger() {
         logger = Logger.getLogger("Plugin." + getPlugin().getName() + ":Module." + name);
@@ -42,17 +74,64 @@ public abstract class Module {
         logger.addHandler(new ModuleLoggerHandler(this));
     }
 
-    protected Module(Module parent, String name) {
+    private Module(String name, String configPath, Class config) {
         this.name = name;
+        this.config = config;
+        this.configPath = configPath;
+    }
+
+
+    protected Module(Module parent, String name, String configPath, Class config) {
+        this(name, configPath, config);
         this.parent = parent;
         this.parent.children.add(this);
         setupLogger();
+        setupConfig();
     }
 
-    protected Module(Plugin plugin, String name) {
-        this.name = name;
+    protected Module(Plugin plugin, String name, String configPath, Class config) {
+        this(name, configPath, config);
         this.plugin = plugin;
         setupLogger();
+        setupConfig();
+    }
+
+    private void setupConfig() {
+        boolean ownFile = false;
+        String pathInFile = null;
+        String parse[] = configPath.split(":");
+        String fileName = null;
+        if (parse[0].endsWith(".yml")) {
+            ownFile = true;
+            fileName = parse[0];
+        }
+        if (parse.length > 1) {
+            pathInFile = parse[1];
+        }
+        if (pathInFile == null && !ownFile) {
+            pathInFile = getName();
+        }
+
+        String path[] = {"root"};
+
+        if (pathInFile != null) {
+            path = pathInFile.split("\\.");
+        }
+
+        if (ownFile) {
+            annotatedObjectConfiguration = new AnnotatedObjectConfiguration(new YamlConfiguration(new File(getPlugin().getDataFolder(), fileName)));
+        } else {
+            annotatedObjectConfiguration = getParent().annotatedObjectConfiguration;
+        }
+        annotatedObjectConfiguration.add(config, path);
+    }
+
+    public void saveConfig() {
+        try {
+            annotatedObjectConfiguration.save();
+        } catch (ConfigurationException e) {
+            getLogger().log(Level.SEVERE, "Error while saving config " + configPath + ": ", e);
+        }
     }
 
     /**
@@ -172,7 +251,12 @@ public abstract class Module {
             return;
         }
         setState(State.PRE_CONFIG_LOAD);
-        // TODO load config here
+        try {
+            annotatedObjectConfiguration.load();
+            annotatedObjectConfiguration.save();
+        } catch (ConfigurationException e) {
+            getLogger().log(Level.SEVERE, "Error while loading config " + configPath + ":", e);
+        }
         setState(State.CONFIG_LOADED);
         // check if conditions are met
         if (!getState().isValidNextState(State.PRE_WORLD, State.ENABLED)) {

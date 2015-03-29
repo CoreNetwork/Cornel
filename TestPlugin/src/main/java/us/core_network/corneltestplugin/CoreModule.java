@@ -9,11 +9,13 @@ import us.core_network.cornel.module.Module;
 
 public class CoreModule extends Module implements Listener {
     protected CoreModule(Plugin plugin) {
-        super(plugin, "Root");
+        super(plugin, "Root", "testplugin.yml", TestPluginConfig.class);
     }
 
     @Override
     protected void onEnable() {
+        getLogger().info("Config value for root is: " + TestPluginConfig.testValue);
+
         getBukkitManager().registerEvents(this);
     }
 
