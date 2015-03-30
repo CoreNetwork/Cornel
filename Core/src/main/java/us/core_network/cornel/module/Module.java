@@ -3,24 +3,13 @@ package us.core_network.cornel.module;
 import com.flowpowered.cerealization.config.Configuration;
 import com.flowpowered.cerealization.config.ConfigurationException;
 import com.flowpowered.cerealization.config.annotated.AnnotatedObjectConfiguration;
-import com.flowpowered.cerealization.config.annotated.AnnotatedSubclassConfiguration;
 import com.flowpowered.cerealization.config.yaml.YamlConfiguration;
-import net.minecraft.server.v1_8_R1.PacketPlayOutCustomPayload;
 import org.bukkit.Bukkit;
-import org.bukkit.event.Event;
-import org.bukkit.event.EventHandler;
-import org.bukkit.event.HandlerList;
-import org.bukkit.event.Listener;
 import org.bukkit.plugin.Plugin;
-import org.bukkit.plugin.RegisteredListener;
 import us.core_network.cornel.event.module.ModuleStateChangedEvent;
 import us.core_network.cornel.module.dependency.Dependency;
 
 import java.io.File;
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
-import java.lang.reflect.Parameter;
-import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.logging.Handler;
@@ -51,7 +40,6 @@ public abstract class Module {
      *     <li>
      *         <h3>Store in own file</h3>
      *         <pre>modulename.yml</pre>
-     *         This will create a subpath names "root" in the given file. //TODO find out how to put this into the real root
      *     </li>
      *     <li>
      *         <h3>Store in own file with specific path</h3>
@@ -60,12 +48,34 @@ public abstract class Module {
      * </ul>
      */
     private String configPath;
-    private Class config;
+    private Object config;
+    private String[] configNode;
     private ModuleBukkitManager bukkitManager = new ModuleBukkitManager(this);
-    private AnnotatedObjectConfiguration annotatedObjectConfiguration;
+    private Configuration configuration;
+
+    private Module(String name, String configPath, Object config) {
+        this.name = name;
+        this.config = config;
+        this.configPath = configPath;
+    }
+
+    protected Module(Module parent, String name, String configPath, Object config) {
+        this(name, configPath, config);
+        this.parent = parent;
+        this.parent.children.add(this);
+        setupLogger();
+        setupConfig();
+    }
+
+    protected Module(Plugin plugin, String name, String configPath, Object config) {
+        this(name, configPath, config);
+        this.plugin = plugin;
+        setupLogger();
+        setupConfig();
+    }
 
     private void setupLogger() {
-        logger = Logger.getLogger("Plugin." + getPlugin().getName() + ":Module." + name);
+        logger = Logger.getLogger(getLoggerName());
         for (Handler handler : logger.getHandlers()) {
             logger.removeHandler(handler);
         }
@@ -74,29 +84,12 @@ public abstract class Module {
         logger.addHandler(new ModuleLoggerHandler(this));
     }
 
-    private Module(String name, String configPath, Class config) {
-        this.name = name;
-        this.config = config;
-        this.configPath = configPath;
-    }
-
-
-    protected Module(Module parent, String name, String configPath, Class config) {
-        this(name, configPath, config);
-        this.parent = parent;
-        this.parent.children.add(this);
-        setupLogger();
-        setupConfig();
-    }
-
-    protected Module(Plugin plugin, String name, String configPath, Class config) {
-        this(name, configPath, config);
-        this.plugin = plugin;
-        setupLogger();
-        setupConfig();
+    private String getLoggerName() {
+        return "Plugin." + getPlugin().getName() + ":Module." + name;
     }
 
     private void setupConfig() {
+        // TODO figure out sub-submodules paths
         boolean ownFile = false;
         String pathInFile = null;
         String parse[] = configPath.split(":");
@@ -112,23 +105,28 @@ public abstract class Module {
             pathInFile = getName();
         }
 
-        String path[] = {"root"};
+        configNode = null;
 
         if (pathInFile != null) {
-            path = pathInFile.split("\\.");
+            configNode = pathInFile.split("\\.");
         }
 
-        if (ownFile) {
-            annotatedObjectConfiguration = new AnnotatedObjectConfiguration(new YamlConfiguration(new File(getPlugin().getDataFolder(), fileName)));
+        if (ownFile && configNode == null) {
+            configuration = new RootConfiguration(new YamlConfiguration(new File(getPlugin().getDataFolder(), fileName)), config);
+        } else if (ownFile) {
+            AnnotatedObjectConfiguration aoc = new AnnotatedObjectConfiguration(new YamlConfiguration(new File(getPlugin().getDataFolder(), fileName)));
+            configuration = aoc;
+            aoc.add(config, configNode);
         } else {
-            annotatedObjectConfiguration = getParent().annotatedObjectConfiguration;
+            AnnotatedObjectConfiguration aoc = new AnnotatedObjectConfiguration(getParent().configuration);
+            configuration = aoc;
+            aoc.add(config, configNode);
         }
-        annotatedObjectConfiguration.add(config, path);
     }
 
     public void saveConfig() {
         try {
-            annotatedObjectConfiguration.save();
+            configuration.save();
         } catch (ConfigurationException e) {
             getLogger().log(Level.SEVERE, "Error while saving config " + configPath + ": ", e);
         }
@@ -188,21 +186,6 @@ public abstract class Module {
         return dependencies;
     }
 
-    protected void setState(State state) {
-        if (this.state != state) {
-            if (!this.state.isValidNextState(state)) {
-                getLogger().warning("Invalid state traversal " + this.state.name() + " -> " + state.name());
-                getLogger().warning("We'll allow this for now for development purposes.");
-            }
-            ModuleStateChangedEvent event = new ModuleStateChangedEvent(this, this.state, state);
-            Bukkit.getPluginManager().callEvent(event);
-            if (!event.isCancelled()) {
-                this.state = state;
-                onStateChanged(this.state);
-            }
-        }
-    }
-
     protected void onStateChanged(State state) {
         switch (state) {
             case PRE_WORLD:
@@ -252,8 +235,8 @@ public abstract class Module {
         }
         setState(State.PRE_CONFIG_LOAD);
         try {
-            annotatedObjectConfiguration.load();
-            annotatedObjectConfiguration.save();
+            configuration.load();
+            configuration.save();
         } catch (ConfigurationException e) {
             getLogger().log(Level.SEVERE, "Error while loading config " + configPath + ":", e);
         }
@@ -306,6 +289,21 @@ public abstract class Module {
         return state;
     }
 
+    protected void setState(State state) {
+        if (this.state != state) {
+            if (!this.state.isValidNextState(state)) {
+                getLogger().warning("Invalid state traversal " + this.state.name() + " -> " + state.name());
+                getLogger().warning("We'll allow this for now for development purposes.");
+            }
+            ModuleStateChangedEvent event = new ModuleStateChangedEvent(this, this.state, state);
+            Bukkit.getPluginManager().callEvent(event);
+            if (!event.isCancelled()) {
+                this.state = state;
+                onStateChanged(this.state);
+            }
+        }
+    }
+
     protected Logger getLogger() {
         return logger;
     }
@@ -344,10 +342,12 @@ public abstract class Module {
          */
         DISABLED(false);
 
+        private final boolean loaded;
+        private final Set<State> nextPossibleStates = new HashSet<>();
+
         State(boolean loaded) {
             this.loaded = loaded;
         }
-
         static {
             INVALID.nextPossibleStates.add(PRE_CONFIG_LOAD);
             PRE_CONFIG_LOAD.nextPossibleStates.add(CONFIG_LOADED);
@@ -361,9 +361,6 @@ public abstract class Module {
             DISABLED.nextPossibleStates.add(ENABLED);
             DISABLED.nextPossibleStates.add(PRE_CONFIG_LOAD);
         }
-
-        private final boolean loaded;
-        private final Set<State> nextPossibleStates = new HashSet<>();
 
         public boolean isLoaded() {
             return loaded;
