@@ -1,18 +1,18 @@
 package us.core_network.cornel.custom;
 
-import net.minecraft.server.v1_8_R1.DispenserRegistry;
-import net.minecraft.server.v1_8_R1.IInventory;
-import net.minecraft.server.v1_8_R1.ItemStack;
-import net.minecraft.server.v1_8_R1.Items;
-import net.minecraft.server.v1_8_R1.NBTTagCompound;
-import net.minecraft.server.v1_8_R1.NBTTagList;
-import net.minecraft.server.v1_8_R1.NBTTagString;
-import net.minecraft.server.v1_8_R1.PlayerInventory;
+import net.minecraft.server.v1_8_R2.DispenserRegistry;
+import net.minecraft.server.v1_8_R2.IInventory;
+import net.minecraft.server.v1_8_R2.ItemStack;
+import net.minecraft.server.v1_8_R2.Items;
+import net.minecraft.server.v1_8_R2.NBTTagCompound;
+import net.minecraft.server.v1_8_R2.NBTTagList;
+import net.minecraft.server.v1_8_R2.NBTTagString;
+import net.minecraft.server.v1_8_R2.PlayerInventory;
 import org.bukkit.ChatColor;
 import org.bukkit.CoalType;
 import org.bukkit.Material;
-import org.bukkit.craftbukkit.v1_8_R1.inventory.CraftInventory;
-import org.bukkit.craftbukkit.v1_8_R1.inventory.CraftItemStack;
+import org.bukkit.craftbukkit.v1_8_R2.inventory.CraftInventory;
+import org.bukkit.craftbukkit.v1_8_R2.inventory.CraftItemStack;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.junit.Before;
@@ -34,7 +34,7 @@ public class PerksUtilTest
     public void testGoldenNames() throws Exception
     {
         //Bukkit stuff is not working  properly without actual server running so lets resort to NMS with bukkit proxy.
-        ItemStack nmsItem = new net.minecraft.server.v1_8_R1.ItemStack(Items.ARMOR_STAND);
+        ItemStack nmsItem = new net.minecraft.server.v1_8_R2.ItemStack(Items.ARMOR_STAND);
         assertFalse(PerksUtil.hasGoldenName(nmsItem));
 
         CraftItemStack craftItemStack = CraftItemStack.asCraftMirror(nmsItem);

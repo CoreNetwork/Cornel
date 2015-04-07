@@ -1,6 +1,6 @@
 package us.core_network.cornel.common;
 
-import net.minecraft.server.v1_8_R1.DispenserRegistry;
+import net.minecraft.server.v1_8_R2.DispenserRegistry;
 import org.bukkit.Material;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.potion.PotionEffect;

@@ -2,7 +2,7 @@ package us.core_network.cornel.blocks;
 
 import org.bukkit.Location;
 import org.bukkit.block.Block;
-import org.bukkit.craftbukkit.v1_8_R1.CraftWorld;
+import org.bukkit.craftbukkit.v1_8_R2.CraftWorld;
 
 public class BlockUtil
 {
@@ -13,12 +13,12 @@ public class BlockUtil
      */
     public static boolean isInWorldBorderBounds(Block block)
     {
-        net.minecraft.server.v1_8_R1.WorldBorder nmsWorldBorder = ((CraftWorld) block.getWorld()).getHandle().af();
-        double halfSize = nmsWorldBorder.h() / 2;
-        return      block.getX() > nmsWorldBorder.f() - halfSize
-                &&  block.getX() < nmsWorldBorder.f() + halfSize
-                &&  block.getZ() > nmsWorldBorder.g() - halfSize
-                &&  block.getZ() < nmsWorldBorder.g() + halfSize;
+        net.minecraft.server.v1_8_R2.WorldBorder nmsWorldBorder = ((CraftWorld) block.getWorld()).getHandle().getWorldBorder();
+        double halfSize = nmsWorldBorder.getSize() / 2;
+        return      block.getX() > nmsWorldBorder.getCenterX() - halfSize
+                &&  block.getX() < nmsWorldBorder.getCenterX() + halfSize
+                &&  block.getZ() > nmsWorldBorder.getCenterZ() - halfSize
+                &&  block.getZ() < nmsWorldBorder.getCenterZ() + halfSize;
     }
 
     /**

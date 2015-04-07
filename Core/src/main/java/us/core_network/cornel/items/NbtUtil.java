@@ -1,7 +1,7 @@
 package us.core_network.cornel.items;
 
 import java.util.Set;
-import net.minecraft.server.v1_8_R1.NBTTagCompound;
+import net.minecraft.server.v1_8_R2.NBTTagCompound;
 
 public class NbtUtil
 {
