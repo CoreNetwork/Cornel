@@ -2,11 +2,11 @@ package us.core_network.cornel.items;
 
 import java.util.Arrays;
 import java.util.List;
-import net.minecraft.server.v1_8_R2.Blocks;
-import net.minecraft.server.v1_8_R2.DispenserRegistry;
-import net.minecraft.server.v1_8_R2.ItemStack;
-import net.minecraft.server.v1_8_R2.NBTTagCompound;
-import org.bukkit.craftbukkit.v1_8_R2.inventory.CraftItemStack;
+import net.minecraft.server.v1_8_R3.Blocks;
+import net.minecraft.server.v1_8_R3.DispenserRegistry;
+import net.minecraft.server.v1_8_R3.ItemStack;
+import net.minecraft.server.v1_8_R3.NBTTagCompound;
+import org.bukkit.craftbukkit.v1_8_R3.inventory.CraftItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.junit.Before;
 import org.junit.Test;

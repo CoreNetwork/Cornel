@@ -1,8 +1,8 @@
 package us.core_network.cornel.items;
 
 import java.util.List;
-import net.minecraft.server.v1_8_R2.NBTTagCompound;
-import org.bukkit.craftbukkit.v1_8_R2.inventory.CraftItemStack;
+import net.minecraft.server.v1_8_R3.NBTTagCompound;
+import org.bukkit.craftbukkit.v1_8_R3.inventory.CraftItemStack;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.inventory.CraftingInventory;
@@ -13,16 +13,16 @@ import us.core_network.cornel.java.ReflectionUtils;
 public class ItemStackUtils
 {
     /**
-     * Get NMS item stack from bukkit item stack. This is much faster than {@link org.bukkit.craftbukkit.v1_8_R2.inventory.CraftItemStack#asNMSCopy(org.bukkit.inventory.ItemStack) CraftItemStack.asNMSCopy} as it just retrieves internal variable rather than rebuilding whole NMS stack from scratch.
+     * Get NMS item stack from bukkit item stack. This is much faster than {@link org.bukkit.craftbukkit.v1_8_R3.inventory.CraftItemStack#asNMSCopy(org.bukkit.inventory.ItemStack) CraftItemStack.asNMSCopy} as it just retrieves internal variable rather than rebuilding whole NMS stack from scratch.
      * @param bukkitItemStack Bukkit item stack.
      * @return NMS item stack or <code>null</code> if provided bukkit stack is not CraftItemStack and does not contain NMS item stack.
      */
-    public static net.minecraft.server.v1_8_R2.ItemStack getInternalNMSStack(ItemStack bukkitItemStack)
+    public static net.minecraft.server.v1_8_R3.ItemStack getInternalNMSStack(ItemStack bukkitItemStack)
     {
         if (!(bukkitItemStack instanceof CraftItemStack))
             return null;
 
-        return (net.minecraft.server.v1_8_R2.ItemStack) ReflectionUtils.get(CraftItemStack.class, bukkitItemStack, "handle");
+        return (net.minecraft.server.v1_8_R3.ItemStack) ReflectionUtils.get(CraftItemStack.class, bukkitItemStack, "handle");
     }
 
     /**
@@ -30,7 +30,7 @@ public class ItemStackUtils
      * @param nmsStack Stack to get name from.
      * @return Custom name or <code>null</code> if not set.
      */
-    public static String getStackName(net.minecraft.server.v1_8_R2.ItemStack nmsStack)
+    public static String getStackName(net.minecraft.server.v1_8_R3.ItemStack nmsStack)
     {
         if (nmsStack == null)
             return null;
@@ -54,7 +54,7 @@ public class ItemStackUtils
      * @param tag Name of the tag to check.
      * @return <code>true</code> if NMS stack contains the tag.
      */
-    public static boolean hasTag(net.minecraft.server.v1_8_R2.ItemStack nmsStack, String tag)
+    public static boolean hasTag(net.minecraft.server.v1_8_R3.ItemStack nmsStack, String tag)
     {
         if (nmsStack == null)
             return false;
@@ -105,7 +105,7 @@ public class ItemStackUtils
      * @param b Second ItemStack
      * @return <code>true</code> if ItemStacks contains same item.
      */
-    public static boolean areItemsEqual(net.minecraft.server.v1_8_R2.ItemStack a, net.minecraft.server.v1_8_R2.ItemStack b)
+    public static boolean areItemsEqual(net.minecraft.server.v1_8_R3.ItemStack a, net.minecraft.server.v1_8_R3.ItemStack b)
     {
         if (a.getItem() != b.getItem())
             return false;

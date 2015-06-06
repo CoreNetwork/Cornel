@@ -2,8 +2,8 @@ package us.core_network.cornel.nms;
 
 import java.util.List;
 import java.util.Map;
-import net.minecraft.server.v1_8_R2.BiomeBase;
-import net.minecraft.server.v1_8_R2.EntityTypes;
+import net.minecraft.server.v1_8_R3.BiomeBase;
+import net.minecraft.server.v1_8_R3.EntityTypes;
 import us.core_network.cornel.java.ReflectionUtils;
 
 /**

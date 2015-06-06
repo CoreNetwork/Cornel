@@ -9,10 +9,10 @@ import java.io.DataOutputStream;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.Set;
-import net.minecraft.server.v1_8_R2.NBTReadLimiter;
-import net.minecraft.server.v1_8_R2.NBTTagCompound;
-import net.minecraft.server.v1_8_R2.NBTTagList;
-import net.minecraft.server.v1_8_R2.NBTTagString;
+import net.minecraft.server.v1_8_R3.NBTReadLimiter;
+import net.minecraft.server.v1_8_R3.NBTTagCompound;
+import net.minecraft.server.v1_8_R3.NBTTagList;
+import net.minecraft.server.v1_8_R3.NBTTagString;
 import org.bukkit.inventory.ItemStack;
 
 public class NbtUtils
@@ -85,7 +85,7 @@ public class NbtUtils
      * @param stack Item to get stack from.
      * @return NBT tag converted to byte array.
      */
-    public static byte[] getNBT(net.minecraft.server.v1_8_R2.ItemStack stack)
+    public static byte[] getNBT(net.minecraft.server.v1_8_R3.ItemStack stack)
     {
         ByteArrayOutputStream byteStream = new ByteArrayOutputStream();
         DataOutputStream dataOutput = new DataOutputStream(byteStream);
@@ -124,7 +124,7 @@ public class NbtUtils
      * @param nbt byte array to load NBT stack from.
      * @param stack Item stack to load NBT stack into.
      */
-    public static void loadNBT(byte[] nbt, net.minecraft.server.v1_8_R2.ItemStack stack)
+    public static void loadNBT(byte[] nbt, net.minecraft.server.v1_8_R3.ItemStack stack)
     {
         if (nbt == null || nbt.length == 0)
             return;
